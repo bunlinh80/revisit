@@ -1,0 +1,309 @@
+
+R version 2.15.2 (2012-10-26) -- "Trick or Treat"
+Copyright (C) 2012 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+Platform: i686-pc-linux-gnu (32-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(plyr)
+> library(ggplot2)
+> library(car)
+Loading required package: MASS
+Loading required package: nnet
+Loading required package: survival
+Loading required package: splines
+> library(foreign)
+> library(xlsx)
+Loading required package: xlsxjars
+Loading required package: rJava
+> options(scipen=10000)
+> options(digits=4)
+> 
+> rm(list = ls())
+> 
+> RR <- read.dta("../RR-200-processed.dta")
+> 
+> ## Brief 200 years analysis
+> RR <- subset(RR,(Year>=1791 & Country=="US")
++              | (Year>=1830 & Country=="UK")
++              | (Year>=1880 & Country=="Sweden")
++              | (Year>=1850 & Country=="Spain")
++              | (Year>=1880 & Country=="Portugal")
++              | (Year>=1880 & Country=="Norway")
++              | (Year>=1932 & Country=="New Zealand")
++              | (Year>=1880 & Country=="Netherlands")
++              | (Year>=1885 & Country=="Japan")
++              | (Year>=1880 & Country=="Italy")             
++              | (Year>=1949 & Country=="Ireland")                          
++              | (Year>=1885 & Country=="Japan")
++              | (Year>=1884 & Country=="Greece")
++              | (Year>=1880 & Country=="Germany")             
++              | (Year>=1880 & Country=="France")
++              | (Year>=1914 & Country=="Finland")
++              | (Year>=1880 & Country=="Denmark")
++              | (Year>=1925 & Country=="Canada")
++              | (Year>=1835 & Country=="Belgium")
++              | (Year>=1880 & Country=="Austria")
++              | (Year>=1902 & Country=="Australia")
++              )
+> 
+> 
+> ## Limit to actually available data
+> RR <- subset(RR,  !is.na(dRGDP) & !is.na(debtgdp))
+> 
+> ## Actually available data years 
+> avail.data <- ddply(RR, ~Country, summarize, min.year=min(Year), count.year=sum(!is.na(dRGDP) & !is.na(debtgdp)))
+> avail.data[order(avail.data[,"min.year"]),]
+       Country min.year count.year
+20          US     1791        219
+19          UK     1831        179
+3      Belgium     1836        160
+17       Spain     1851        133
+2      Austria     1880        110
+7       France     1880        100
+8      Germany     1880        107
+11       Italy     1880        126
+13 Netherlands     1880        106
+15      Norway     1880        124
+16    Portugal     1880         92
+18      Sweden     1880        130
+5      Denmark     1881         89
+9       Greece     1884         90
+12       Japan     1886        109
+1    Australia     1902        108
+6      Finland     1914         96
+4       Canada     1925         85
+14 New Zealand     1932         78
+10     Ireland     1949         61
+> 
+> ## Create RR public debt/GDP categories
+> RR$dgcat.lm <- cut(RR$debtgdp, breaks=c(0,30,60,90,Inf))
+> RR$dgcat <- factor(RR$dgcat.lm, labels = c("0-30%","30-60%","60-90%","Above 90%"),ordered=TRUE)
+> 
+> ## Create expanded public debt/GDP categories
+> RR$dgcat2.lm <- cut(RR$debtgdp, breaks=c(0,30,60,90,120,Inf))
+> RR$dgcat2 <- factor(RR$dgcat2.lm, labels = c("0-30%","30-60%","60-90%","90-120%","Above 120%"),ordered=TRUE)
+> 
+> 
+> (RR.equalwt.mean <- with(RR, tapply( dRGDP, list(Country,dgcat), mean, na.rm=TRUE )))
+            0-30% 30-60% 60-90% Above 90%
+Australia   3.142 4.1371  2.930    3.5282
+Austria     4.306 2.9914  2.341        NA
+Belgium     2.956 2.3684  2.098    3.2622
+Canada      2.516 4.4442  3.229    2.2079
+Denmark     3.162 1.7000  2.391        NA
+Finland     3.234 3.0141  4.257    1.9133
+France      5.426 2.6162  2.818    2.1074
+Germany     3.592 0.8758     NA        NA
+Greece      4.001 3.2581  4.820    2.4701
+Ireland     4.417 4.4522  3.950    2.4286
+Italy       5.353 3.8280  1.355    1.1944
+Japan       5.169 3.7179  3.885    0.6873
+Netherlands 4.083 2.8147  2.350    2.0094
+New Zealand 2.466 2.8896  3.884    3.7135
+Norway      2.912 4.3926 10.201        NA
+Portugal    4.451 3.4346  1.634        NA
+Spain       1.549 3.1871  1.294    2.1783
+Sweden      2.918 2.8603  2.666        NA
+UK          2.534 2.1167  2.072    1.8047
+US          4.021 3.9008  3.810   -0.1665
+> summary(RR.equalwt.mean)
+     0-30%          30-60%          60-90%        Above 90%     
+ Min.   :1.55   Min.   :0.876   Min.   : 1.29   Min.   :-0.166  
+ 1st Qu.:2.92   1st Qu.:2.765   1st Qu.: 2.22   1st Qu.: 1.832  
+ Median :3.41   Median :3.101   Median : 2.82   Median : 2.143  
+ Mean   :3.61   Mean   :3.150   Mean   : 3.26   Mean   : 2.096  
+ 3rd Qu.:4.33   3rd Qu.:3.846   3rd Qu.: 3.88   3rd Qu.: 2.460  
+ Max.   :5.43   Max.   :4.452   Max.   :10.20   Max.   : 3.713  
+                                NA's   :1       NA's   :6       
+> ## NYT Appendix Table 2 Line 2
+> (RR.correct.mean <- with(RR, tapply( dRGDP, dgcat, mean, na.rm=TRUE )))
+    0-30%    30-60%    60-90% Above 90% 
+    3.676     3.171     2.546     2.135 
+> RR.correct.mean.df <- data.frame(RR.correct.mean, dgcat=names(RR.correct.mean) )
+> 
+> 
+> ## country weights
+> apply(RR.equalwt.mean,2,mean,na.rm=TRUE)
+    0-30%    30-60%    60-90% Above 90% 
+    3.610     3.150     3.262     2.096 
+> apply(RR.equalwt.mean,2,sd,na.rm=TRUE)
+    0-30%    30-60%    60-90% Above 90% 
+   1.0518    0.9424    1.9601    1.0503 
+> with(RR, table(Country,dgcat))
+             dgcat
+Country       0-30% 30-60% 60-90% Above 90%
+  Australia      38     33     28         9
+  Austria        43     32     35         0
+  Belgium        37     60     32        31
+  Canada          3     52     23         7
+  Denmark        56     16     17         0
+  Finland        69     18      6         3
+  France         26     20     19        35
+  Germany        96     11      0         0
+  Greece         13     11     11        55
+  Ireland         8     14     32         7
+  Italy          26     15     42        43
+  Japan          45     42     11        11
+  Netherlands    17     49     32         8
+  New Zealand     9     33     17        19
+  Norway         98     25      1         0
+  Portugal       42     10     40         0
+  Spain           5     52     47        29
+  Sweden         79     40     11         0
+  UK              3     68     27        81
+  US            129     60     24         6
+> apply(with(RR,table( Country,dgcat)),2,sum)
+    0-30%    30-60%    60-90% Above 90% 
+      842       661       455       344 
+> 
+> 
+> ## Test effect of spreadsheet error in 200-year analysis
+> RR.spreadsheet <- subset(RR, ! Country %in% c("Australia","Austria","Belgium","Canada","Denmark") )
+> (RR.spreadsheet.mean <- with(RR.spreadsheet, tapply( dRGDP, list(Country,dgcat), mean, na.rm=TRUE )))
+            0-30% 30-60% 60-90% Above 90%
+Australia      NA     NA     NA        NA
+Austria        NA     NA     NA        NA
+Belgium        NA     NA     NA        NA
+Canada         NA     NA     NA        NA
+Denmark        NA     NA     NA        NA
+Finland     3.234 3.0141  4.257    1.9133
+France      5.426 2.6162  2.818    2.1074
+Germany     3.592 0.8758     NA        NA
+Greece      4.001 3.2581  4.820    2.4701
+Ireland     4.417 4.4522  3.950    2.4286
+Italy       5.353 3.8280  1.355    1.1944
+Japan       5.169 3.7179  3.885    0.6873
+Netherlands 4.083 2.8147  2.350    2.0094
+New Zealand 2.466 2.8896  3.884    3.7135
+Norway      2.912 4.3926 10.201        NA
+Portugal    4.451 3.4346  1.634        NA
+Spain       1.549 3.1871  1.294    2.1783
+Sweden      2.918 2.8603  2.666        NA
+UK          2.534 2.1167  2.072    1.8047
+US          4.021 3.9008  3.810   -0.1665
+> summary(RR.spreadsheet.mean)
+     0-30%          30-60%          60-90%        Above 90%     
+ Min.   :1.55   Min.   :0.876   Min.   : 1.29   Min.   :-0.166  
+ 1st Qu.:2.92   1st Qu.:2.837   1st Qu.: 2.14   1st Qu.: 1.500  
+ Median :4.00   Median :3.187   Median : 3.31   Median : 2.009  
+ Mean   :3.74   Mean   :3.157   Mean   : 3.50   Mean   : 1.849  
+ 3rd Qu.:4.43   3rd Qu.:3.773   3rd Qu.: 3.93   3rd Qu.: 2.303  
+ Max.   :5.43   Max.   :4.452   Max.   :10.20   Max.   : 3.713  
+ NA's   :5      NA's   :5       NA's   :6       NA's   :9       
+> with(RR.spreadsheet, tapply( dRGDP, dgcat, mean, na.rm=TRUE ))
+    0-30%    30-60%    60-90% Above 90% 
+    3.754     3.127     2.539     1.974 
+> 
+> ## Expanded categories 
+> (RR.ex.equalwt.mean <- with(RR, tapply( dRGDP, list(Country,dgcat2), mean, na.rm=TRUE )))
+            0-30% 30-60% 60-90% 90-120% Above 120%
+Australia   3.142 4.1371  2.930   6.205     1.3866
+Austria     4.306 2.9914  2.341      NA         NA
+Belgium     2.956 2.3684  2.098   3.150     4.8877
+Canada      2.516 4.4442  3.229   4.351    -0.6496
+Denmark     3.162 1.7000  2.391      NA         NA
+Finland     3.234 3.0141  4.257   1.913         NA
+France      5.426 2.6162  2.818   1.733     3.0429
+Germany     3.592 0.8758     NA      NA         NA
+Greece      4.001 3.2581  4.820   3.274     1.5057
+Ireland     4.417 4.4522  3.950   2.429         NA
+Italy       5.353 3.8280  1.355   1.731    -0.8328
+Japan       5.169 3.7179  3.885   1.360     0.5379
+Netherlands 4.083 2.8147  2.350   2.009         NA
+New Zealand 2.466 2.8896  3.884   1.077     6.0865
+Norway      2.912 4.3926 10.201      NA         NA
+Portugal    4.451 3.4346  1.634      NA         NA
+Spain       1.549 3.1871  1.294   2.079     2.2847
+Sweden      2.918 2.8603  2.666      NA         NA
+UK          2.534 2.1167  2.072   2.993     1.3614
+US          4.021 3.9008  3.810   1.989   -10.9422
+> summary(RR.ex.equalwt.mean)
+     0-30%          30-60%          60-90%         90-120%    
+ Min.   :1.55   Min.   :0.876   Min.   : 1.29   Min.   :1.08  
+ 1st Qu.:2.92   1st Qu.:2.765   1st Qu.: 2.22   1st Qu.:1.78  
+ Median :3.41   Median :3.101   Median : 2.82   Median :2.04  
+ Mean   :3.61   Mean   :3.150   Mean   : 3.26   Mean   :2.59  
+ 3rd Qu.:4.33   3rd Qu.:3.846   3rd Qu.: 3.88   3rd Qu.:3.11  
+ Max.   :5.43   Max.   :4.452   Max.   :10.20   Max.   :6.21  
+                                NA's   :1       NA's   :6     
+   Above 120%     
+ Min.   :-10.942  
+ 1st Qu.: -0.056  
+ Median :  1.387  
+ Mean   :  0.788  
+ 3rd Qu.:  2.664  
+ Max.   :  6.086  
+ NA's   :9        
+> ## NYT Appendix Table 3 
+> (RR.ex.correct.mean <- with(RR, tapply( dRGDP, dgcat2, mean, na.rm=TRUE )))
+     0-30%     30-60%     60-90%    90-120% Above 120% 
+     3.676      3.171      2.546      2.498      1.649 
+> RR.ex.correct.mean.df <- data.frame(RR.ex.correct.mean, dgcat=names(RR.ex.correct.mean) )
+> 
+> 
+> ## Compute standard errors
+> (mean200 <- with(RR, tapply( dRGDP, dgcat2, mean, na.rm=TRUE )))
+     0-30%     30-60%     60-90%    90-120% Above 120% 
+     3.676      3.171      2.546      2.498      1.649 
+> (sd200 <- with(RR, tapply( dRGDP, dgcat2, sd, na.rm=TRUE )))
+     0-30%     30-60%     60-90%    90-120% Above 120% 
+     3.713      3.882      4.235      3.778      5.657 
+> (length200 <- with(RR, tapply( dRGDP, dgcat2, length )))
+     0-30%     30-60%     60-90%    90-120% Above 120% 
+       842        661        455        197        147 
+> sd200 / sqrt(length200)
+     0-30%     30-60%     60-90%    90-120% Above 120% 
+    0.1279     0.1510     0.1985     0.2691     0.4666 
+> 
+> 
+> L <- ggplot(RR, aes(x=dgcat2,y=dRGDP)) + geom_point(shape=3,color='darkgray') + ylab("Real GDP Growth") + xlab("Public Debt/GDP Category")
+> ## L <- L + geom_text(mapping=aes(label=Country ), size=2, hjust=-0.7,color='darkgray') 
+> L <- L + geom_point(RR.ex.correct.mean.df,  mapping=aes(x=dgcat,y=RR.ex.correct.mean,label=RR.ex.correct.mean), shape=16, size=4 )  + theme_bw()
+> L <- L + geom_text(RR.ex.correct.mean.df,  mapping=aes(x=dgcat,y=RR.ex.correct.mean,label=round(RR.ex.correct.mean,1)), hjust=1.7,size=3,color='darkgray')
+> print(L)
+> 
+> 
+> ## Scatterplot (continuous)
+> library(mgcv)
+This is mgcv 1.7-22. For overview type 'help("mgcv-package")'.
+> RR.gam <- gam(dRGDP ~ s(debtgdp, bs="cs"),data=RR)
+> 
+> ## Cross-validation technique for loess parameters
+> ## http://stats.stackexchange.com/questions/2002/how-do-i-decide-what-span-to-use-in-loess-regression-in-r
+> m <- ggplot(RR, aes(x=debtgdp,y=dRGDP))
+> m1 <- m + geom_vline(xintercept=90,color='lightgray',size=1.5)
+> m1 <- m1 + geom_point(color='darkgray') + ylab("Real GDP Growth") + xlab("Public Debt/GDP Ratio") + scale_x_continuous(breaks=seq(0,240,30)) + theme_bw()
+> ## m1 <- m1 + geom_smooth(method='loess',span=1.0,color='black') + geom_smooth(method='loess',span=0.2,color='black')
+> m1 <- m1 + geom_smooth(method=gam, color='black',formula= y ~ s(x, bs = "cs"))
+> ## m1 <- m1 + geom_smooth(method='auto', color='black')
+> print(m1)
+> 
+> ## Scatterplot closeup
+> pdf("closeup.pdf",height=4,width=7)
+> m2 <- m + geom_point(color='darkgray') + ylab("Real GDP Growth") + xlab("Public Debt/GDP Ratio") + scale_x_continuous(breaks=seq(0,240,30)) + theme_bw() +  geom_vline(xintercept=90,color='lightgray',size=1.5)
+> ## m2 <- m2 + geom_smooth(method='loess',span=0.75,color='black') + geom_smooth(method='loess',span=0.4,color='black') 
+> ## m2 <- m2 + geom_smooth(method='auto',color='black')
+> m2 <- m2 + geom_smooth(method=gam, color='black',formula= y ~ s(x, bs = "cs"))
+> m2 <- m2 + coord_cartesian(ylim=c(0, 7),xlim=c(0,150)) + scale_y_continuous(breaks=c(0,1,2,3,4,5,6,7)) + theme_bw()
+> print(m2)
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  8.164   0.244   8.326 

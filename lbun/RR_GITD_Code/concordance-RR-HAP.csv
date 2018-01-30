@@ -1,0 +1,25 @@
+"Country","Debt","Debt1","Debt2","Debtalt","GDP","GDPalt","GDP1","GDP2","GDP2alt","GDP3","GNI","RGDP","RGDP1","RGDP2","RGDP2alt","dRGDP","debtgdp","GDPI","GDPI1","GDPI2","Infl"
+"Australia","Debt",,,,,,"Nominal GDP millions dollars","Nominal GDP millions IFS/WEO",,,,,"Real GDP","Real GDP millions WEO,2005/2006",,,,"Deflator 2005/2006=100",,,"Inflation spliced"
+"Austria",,"Debt million AS","Debt million euro",,,,"Nominal GDP million AS","Nominal GDP million euro IFS/WEO",,,,"Real GDP 1990",,,,"Real GDP growth spliced",,,,,"Inflation spliced"
+"Belgium","Debt spliced millions euros",,,,,"Nominal GDP millions BF","Nominal GDP millions BF","Nominal GDP millions euros",,,,,"Real GDP millions 1910","Real GDP millions WEO, 2006",,,,,,,
+"Canada","Debt spliced",,,,,,"Nominal GDP millions","Nominal GDP millions IFS/WEO",,,,,"Real GDP millions","Real GDP millions WEO, 2006",,,,,,,"Inflation spliced"
+"Denmark",,"Debt Federal millions DM","Debt Federal billion euros",,,,"Nominal GNI/GDP millions","Nominal GDP billions IFS/WEO",,,,,"Real GDP millions","Real GDP millions WEO, 2006",,,,,,,"Inflation spliced"
+"Finland",,"Debt spliced","Debt euros","Debt spliced",,,"Nominal GDP millions","Nominal GDP millions euros IFS/WEO","Nominal GDP millions",,,,"Real GDP millions","Real GDP millions WEO, 2000","Real GDP millions",,,,,,"Inflation spliced"
+"France",,"Debt spliced","Debt millions euro","Debt spliced",,,"Nominal GDP millions","Nominal GDP millions IFS/WEO","Nominal GDP millions euro",,,,"Real GDP millions","Real GDP millions WEO, 2006",,,,,,,"Inflation spliced"
+"Germany",,"Debt Federal millions DM","Debt Federal billion euros",,,,"Nominal GNI/GDP millions","Nominal GDP billions euro IFS/WEO",,,,,"Real GDP millions","Real GDP millions WEO, 2006",,,,,,,"Inflation spliced"
+"Greece","Debt spliced",,,,,,"Nominal GDP millions","Nominal GDP millions IFS/WEO",,,,"Real GDP millions",,,,"Real GDP growth spliced","Debt/GDP OECD",,,,"Inflation RR"
+"Ireland","Debt spliced euros",,,,,,"Nominal GDP millions","Nominal GDP millions euros",,"Nominal GDP millions",,,"Real GDP millions","Real GDP millions",,"Real GDP growth",,,,,
+"Italy","Debt spliced",,,,,,"Nominal GDP millions","Nominal GDP millions IFS/WEO",,,"Nominal GNI millions GFD",,"Real GDP millions","Real GDP millions WEO, 2000",,"Real GDP growth spliced",,,,,"Inflation spliced"
+"Japan","Debt spliced",,,,,,"Nominal GDP millions","Nominal GDP millions IFS/WEO",,,,,"Real GDP millions","Real GDP millions WEO, 2000",,,,,"Deflator 1934-36=100 1990=100","Deflator 2000=100",
+"Netherlands","Debt spliced",,,,,,"Nominal GDP millions","Nominal GDP billions IFS/WEO",,,,,"Real GDP millions 1913","Real GDP millions WEO, 2000",,,,,"Deflator 1913=100","Deflator 2000=100",
+"New Zealand","Debt dollars",,,,,,"Nominal GDP millions","Nominal GDP millions IFS/WEO",,,,,"Real GDP millions Maddison","Real GDP millions",,,,,,,"Inflation spliced RR"
+"Norway","Debt spliced",,,,,,"Nominal GDP millions","Nominal GDP millions IFS/WEO",,,,,"Real GDP millions","Real GDP millions WEO, 2006",,,,,"Deflator 2000=100","Deflator 2006=100",
+"Portugal",,"Debt spliced millions ep","Debt million euro",,,,"Nominal GDP millions","unlabelled",,,,,"Real GDP millions","Real GDP millions WEO, 2006",,,,,,,"Inflation spliced"
+"Spain","Debt spliced",,,,,,"Nominal GDP millions","Nominal GDP millions IFS/WEO",,,,,"Real GDP millions","Real GDP millions WEO",,,,,"Deflator 1958=100","Deflator 1995=100",
+"Sweden","Debt spliced",,,,,,"Nominal GDP millions","Nominal GDP millions IFS/WEO",,,,,"Real GDP millions","Real GDP millions WEO",,,,,"Deflator 1910-12= 100","Deflator 2000=100",
+"UK","Debt millions",,,,"Nominal GDP millions",,,,,,,"Real GDP millions",,,,"Real GDP growth",,"GDP deflator 2003=100",,,
+"US","Debt US Treasury Direct billions",,,,"Nominal GDP GDP billions",,,,,,,"Real GDP",,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,
+"Note:  Table entries are the Reinhart and Rogoff column headers corresponding to variable names in the HAP analysis.  For example, the variable Debt1 for Portugal in the HAP R code corresponds to 'Debt spliced (millions ep)' in the Portugal sheet of the RR working spreadsheet.",,,,,,,,,,,,,,,,,,,,,
+"Source: Reinhart and Rogoff working spreadsheet.",,,,,,,,,,,,,,,,,,,,,

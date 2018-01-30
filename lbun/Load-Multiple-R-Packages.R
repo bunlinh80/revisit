@@ -18,7 +18,8 @@ packages <- c("hrbrthemes",
               "prediction",
               "reshape2",
               "creditboomsgonebust",
-              "plm")
+              "plm",
+              "plyr")
 
 
 lapply(packages, library, character.only = TRUE)
